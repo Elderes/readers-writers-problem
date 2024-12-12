@@ -1,22 +1,31 @@
 package com.ifpb.edu.so;
 
-public class Leitor implements Runnable {
+public class Leitor extends Thread {    
     @Override
     public void run() {
-        while (true) {
-            // Leitores usam o lock de leitura
-            LeitoresEscritores.lock.readLock().lock();
-            try {
-                System.out.println(Thread.currentThread().getName() +
-                        " leu o recurso: " + LeitoresEscritores.recursoCompartilhado);
-            } finally {
-                LeitoresEscritores.lock.readLock().unlock(); // Libera o lock de leitura
+        try {
+            //Acquire Section
+            Semaphores.bloqLeitor.acquire();
+            Semaphores.contaLeitor++;
+            if (Semaphores.contaLeitor == 1) {
+                Semaphores.bloqEscritor.acquire();
             }
-            try {
-                Thread.sleep(1000); // Simula tempo de leitura
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            Semaphores.bloqLeitor.release();
+
+            //Reading section
+            System.out.println("Leitor "+Thread.currentThread().getName() + " Está lendo");
+            Thread.sleep(1500);
+            System.out.println("Leitor "+Thread.currentThread().getName() + " terminou de ler");
+
+            //Releasing section
+            Semaphores.bloqLeitor.acquire();
+            Semaphores.contaLeitor--;
+            if(Semaphores.contaLeitor == 0) {
+                Semaphores.bloqEscritor.release();
             }
+            Semaphores.bloqLeitor.release();
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
