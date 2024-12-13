@@ -1,12 +1,6 @@
 package com.ifpb.edu.so;
 
-import java.util.concurrent.Semaphore;
-
-public class LeitoresEscritores {
-    public static Semaphore bloqLeitor = new Semaphore(1);
-    public static Semaphore bloqEscritor = new Semaphore(1);
-    public static int contaLeitor = 0;
-    
+public class LeitoresEscritores {    
     public static void main(String[] args) throws Exception {
         
         Leitor leitor = new Leitor();
