@@ -24,5 +24,12 @@ public class Semaphores {
      * desde que não haja escritores acessando o recurso.
      */
     public static int contaLeitor = 0;
+    /**
+     * Limite máximo de leitores simultâneos permitidos.
+     * Este limite é usado para evitar starvation de escritores,
+     * garantindo que após atingir o número máximo de leitores,
+     * os escritores possam acessar o recurso compartilhado.
+     */
+    public static final int LIMITE_LEITORES = 3;
 
 }

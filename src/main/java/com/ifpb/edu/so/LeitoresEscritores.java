@@ -20,6 +20,7 @@ public class LeitoresEscritores {
         t5.setName("thread 5");
         t6.setName("thread 6");
         
+        // Iniciou os processos em ordem aleatória
         t3.start();
         t1.start();
         t2.start();

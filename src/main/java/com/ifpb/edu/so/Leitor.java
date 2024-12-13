@@ -16,11 +16,24 @@ public class Leitor extends Thread {
         try {
             // Tenta adquirir o semáforo para iniciar a leitura
             Semaphores.bloqLeitor.acquire();
-            Semaphores.contaLeitor++;
-            // Se for o primeiro leitor a chegar, bloqueia o acesso a escritores.
-            if (Semaphores.contaLeitor == 1) {
-                Semaphores.bloqEscritor.acquire();
+            // Verifica se o número de leitores não excede o limite imposto
+            if (Semaphores.contaLeitor < Semaphores.LIMITE_LEITORES) {
+                Semaphores.contaLeitor++;
+                // Se for o primeiro leitor a chegar, bloqueia o acesso a escritores.
+                if (Semaphores.contaLeitor == 1) {
+                    Semaphores.bloqEscritor.acquire();
+                }
+            } else {
+                System.out.println("Leitor " + Thread.currentThread().getName() + " está esperando devido ao limite de leitores.");    
+                // Libera o semáforo e espera
+                Semaphores.bloqLeitor.release();
+                // Pequeno atraso para evitar busy-wait
+                Thread.sleep(100);
+                // Tenta novamente
+                run();
+                return;
             }
+            
             // Libera o semáforo para que outro leitor possa compartilhar o recurso.
             Semaphores.bloqLeitor.release();
 
